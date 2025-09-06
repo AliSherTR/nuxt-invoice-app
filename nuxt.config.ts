@@ -23,8 +23,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   runtimeConfig: {
-    mongoUrl: "",
-    jwtSecret: "",
-    public: {},
+    jwtSecret: process.env.JWT_SECRET,
+    databaseUrl: process.env.DATABASE_URL,
   },
 });

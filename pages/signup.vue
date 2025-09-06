@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import SignUpForm from "~/features/auth/components/SignUpForm.vue";
+
 definePageMeta({
   layout: "auth",
 });
@@ -7,5 +9,5 @@ useHead({
 });
 </script>
 <template>
-  <div>Sign Up Page</div>
+  <SignUpForm />
 </template>

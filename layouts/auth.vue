@@ -1,3 +1,14 @@
+<script setup lang="ts">
+import { Moon, Sun } from "lucide-vue-next";
+import logo from "../../public/logo.svg";
+
+const colorMode = useColorMode();
+
+const switchColorMode = (color: string) => {
+  colorMode.preference = color;
+};
+</script>
+
 <template>
   <div class="flex h-screen overflow-hidden">
     <aside
@@ -26,33 +37,14 @@
           </ClientOnly>
         </div>
       </div>
-      <hr class="dark:border-white border-gray-600" />
-      <div class="flex items-center justify-center py-8">
-        <img
-          :src="avatar"
-          alt="Avatar"
-          class="size-12 rounded-full object-cover"
-        />
-      </div>
     </aside>
     <main
       class="flex-1 overflow-y-auto p-5 dark:bg-[#0c0e16] bg-white pt-12 w-full mx-auto flex items-center justify-center"
     >
       <div class="flex-1 max-w-xl">
         <slot />
+        <Toaster />
       </div>
     </main>
   </div>
 </template>
-
-<script setup lang="ts">
-import { Moon, Sun } from "lucide-vue-next";
-import logo from "../../public/logo.svg";
-import avatar from "../../public/avatar.jpg";
-
-const colorMode = useColorMode();
-
-const switchColorMode = (color: string) => {
-  colorMode.preference = color;
-};
-</script>
