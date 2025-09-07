@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import * as jose from "jose";
 
 const protectedRoutes = ["/dashboard", "/profile", "/invoices", "/settings"];
 const guestOnlyRoutes = ["/login", "/signup"];
@@ -21,7 +21,9 @@ export default defineEventHandler(async (event) => {
   if (token) {
     try {
       const config = useRuntimeConfig();
-      jwt.verify(token, config.jwtSecret);
+      const secret = new TextEncoder().encode(config.jwtSecret);
+
+      await jose.jwtVerify(token, secret);
       isAuthenticated = true;
     } catch (error) {
       // Invalid token, clear it
@@ -39,6 +41,7 @@ export default defineEventHandler(async (event) => {
   const isProtectedRoute = protectedRoutes.some((route) =>
     url.startsWith(route)
   );
+
   if (isProtectedRoute && !isAuthenticated) {
     await sendRedirect(event, "/login");
     return;
@@ -48,6 +51,7 @@ export default defineEventHandler(async (event) => {
   const isGuestOnlyRoute = guestOnlyRoutes.some((route) =>
     url.startsWith(route)
   );
+
   if (isGuestOnlyRoute && isAuthenticated) {
     await sendRedirect(event, "/dashboard");
     return;

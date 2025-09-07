@@ -1,8 +1,8 @@
-import jwt from "jsonwebtoken";
+import * as jose from "jose";
 import type { EventHandlerRequest, H3Event } from "h3";
 
 export interface AuthUser {
-  userId: string;
+  userId: number;
   email: string;
 }
 
@@ -20,8 +20,11 @@ export async function requireAuth(
 
   try {
     const config = useRuntimeConfig();
-    const decoded = jwt.verify(token, config.jwtSecret) as AuthUser;
-    return decoded;
+    const secret = new TextEncoder().encode(config.jwtSecret);
+
+    const { payload } = await jose.jwtVerify(token, secret);
+
+    return payload as unknown as AuthUser;
   } catch (error) {
     // Clear invalid token
     setCookie(event, "auth-token", "", {
@@ -49,8 +52,11 @@ export async function getOptionalAuth(
 
   try {
     const config = useRuntimeConfig();
-    const decoded = jwt.verify(token, config.jwtSecret) as AuthUser;
-    return decoded;
+    const secret = new TextEncoder().encode(config.jwtSecret);
+
+    const { payload } = await jose.jwtVerify(token, secret);
+
+    return payload as unknown as AuthUser;
   } catch (error) {
     // Clear invalid token
     setCookie(event, "auth-token", "", {

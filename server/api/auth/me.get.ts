@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import * as jose from "jose";
 import { PrismaClient } from "~/lib/generated/prisma";
 
 const prisma = new PrismaClient();
@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 export default defineEventHandler(async (event) => {
   try {
     // Only allow GET requests
-    if (getMethod(event) !== "GET") {
+    if (event.method !== "GET") {
       throw createError({
         statusCode: 405,
         statusMessage: "Method Not Allowed",
@@ -15,7 +15,6 @@ export default defineEventHandler(async (event) => {
 
     // Get token from cookie
     const token = getCookie(event, "auth-token");
-
     if (!token) {
       throw createError({
         statusCode: 401,
@@ -23,9 +22,14 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    // Verify token
+    // Verify token using jose
     const config = useRuntimeConfig();
-    const decoded = jwt.verify(token, config.jwtSecret) as {
+    const secret = new TextEncoder().encode(config.jwtSecret);
+
+    const { payload } = await jose.jwtVerify(token, secret);
+
+    // Extract user data from payload
+    const decoded = payload as {
       userId: number;
       email: string;
     };
@@ -56,10 +60,12 @@ export default defineEventHandler(async (event) => {
   } catch (error: any) {
     console.error("Get user error:", error);
 
-    // Handle JWT errors
+    // Handle JWT errors from jose
     if (
-      error.name === "JsonWebTokenError" ||
-      error.name === "TokenExpiredError"
+      error instanceof jose.errors.JWTExpired ||
+      error instanceof jose.errors.JWTInvalid ||
+      error instanceof jose.errors.JWSInvalid ||
+      error instanceof jose.errors.JWTClaimValidationFailed
     ) {
       // Clear invalid token
       setCookie(event, "auth-token", "", {

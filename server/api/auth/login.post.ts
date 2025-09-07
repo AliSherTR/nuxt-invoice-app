@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import * as jose from "jose"; // Replace jwt import
 import { z } from "zod";
 import { loginSchema } from "~/features/auth/schema";
 import { PrismaClient } from "~/lib/generated/prisma";
@@ -45,13 +45,18 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    // Generate JWT token
+    // Generate JWT token using jose
     const config = useRuntimeConfig();
-    const token = jwt.sign(
-      { userId: user.id, email: user.email },
-      config.jwtSecret,
-      { expiresIn: "7d" }
-    );
+    const secret = new TextEncoder().encode(config.jwtSecret);
+
+    const token = await new jose.SignJWT({
+      userId: user.id,
+      email: user.email,
+    })
+      .setProtectedHeader({ alg: "HS256" })
+      .setIssuedAt()
+      .setExpirationTime("7d")
+      .sign(secret);
 
     // Set HTTP-only cookie
     setCookie(event, "auth-token", token, {
@@ -63,7 +68,6 @@ export default defineEventHandler(async (event) => {
 
     // Return user data (without password)
     const { password: _, ...userWithoutPassword } = user;
-
     return {
       success: true,
       message: "Login successful",
