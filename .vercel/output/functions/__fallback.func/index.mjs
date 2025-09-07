@@ -1,0 +1,21 @@
+import process from 'node:process';globalThis._importMeta_={url:import.meta.url,env:process.env};export { J as default } from './chunks/nitro/nitro.mjs';
+import 'node:os';
+import 'node:tty';
+import 'node:fs';
+import 'node:path';
+import 'node:crypto';
+import 'node:child_process';
+import 'node:fs/promises';
+import 'node:util';
+import 'node:process';
+import 'node:async_hooks';
+import 'node:events';
+import 'path';
+import 'fs';
+import 'node:http';
+import 'node:https';
+import 'node:buffer';
+import 'jose';
+import 'node:url';
+import 'ipx';
+//# sourceMappingURL=index.mjs.map

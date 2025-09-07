@@ -2,9 +2,7 @@ import bcrypt from "bcryptjs";
 import * as jose from "jose"; // Replace jwt import
 import { z } from "zod";
 import { loginSchema } from "~/features/auth/schema";
-import { PrismaClient } from "~/lib/generated/prisma";
-
-const prisma = new PrismaClient();
+import prisma from "~/server/utils/prisma";
 
 export default defineEventHandler(async (event) => {
   try {

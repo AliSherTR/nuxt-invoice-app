@@ -26,4 +26,18 @@ export default defineNuxtConfig({
     jwtSecret: process.env.JWT_SECRET,
     databaseUrl: process.env.DATABASE_URL,
   },
+  nitro: {
+    preset: "vercel",
+    experimental: {
+      wasm: true,
+    },
+    // Add this to help with Prisma's binary resolution
+    rollupConfig: {
+      external: ["@prisma/client"],
+    },
+  },
+  // Add Prisma to the transpile array
+  build: {
+    transpile: ["@prisma/client"],
+  },
 });

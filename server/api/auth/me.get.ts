@@ -1,7 +1,5 @@
 import * as jose from "jose";
-import { PrismaClient } from "~/lib/generated/prisma";
-
-const prisma = new PrismaClient();
+import prisma from "~/server/utils/prisma";
 
 export default defineEventHandler(async (event) => {
   try {
