@@ -12,7 +12,9 @@ import {
 import { Button } from "~/components/ui/button";
 import { SignUpFormSchema } from "../schema";
 import { Input } from "~/components/ui/input";
+import { toast } from "vue-sonner";
 
+const { register, isLoading } = useAuth();
 const form = useForm({
   validationSchema: SignUpFormSchema,
 });
@@ -28,7 +30,25 @@ const toggleConfirmPassword = () => {
 };
 
 const onSubmit = form.handleSubmit(async (values) => {
-  console.log(values);
+  const res = await register(values);
+
+  if (res.success) {
+    toast.success(res.message, {
+      style: {
+        background: "green",
+        border: "1px solid green",
+        color: "white",
+      },
+    });
+  } else {
+    toast.error(res.message, {
+      style: {
+        background: "red",
+        border: "1px solid red",
+        color: "white",
+      },
+    });
+  }
 });
 </script>
 <template>
@@ -114,7 +134,9 @@ const onSubmit = form.handleSubmit(async (values) => {
           </FormItem>
         </FormField>
 
-        <Button type="submit" class="w-full">Sign Up </Button>
+        <Button type="submit" class="w-full" :disabled="isLoading">
+          {{ isLoading ? "Signing Up" : "Sign Up " }}
+        </Button>
       </form>
 
       <p class="mt-4 text-sm text-right">

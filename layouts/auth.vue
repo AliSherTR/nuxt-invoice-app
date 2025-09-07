@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Moon, Sun } from "lucide-vue-next";
 import logo from "../../public/logo.svg";
+import { Toaster } from "~/components/ui/sonner";
+import "vue-sonner/style.css";
 
 const colorMode = useColorMode();
 

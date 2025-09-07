@@ -3,6 +3,8 @@ import { Moon, Sun } from "lucide-vue-next";
 import logo from "../../public/logo.svg";
 import avatar from "../../public/avatar.jpg";
 import { useAuth } from "~/composables/useAuth";
+import { Toaster } from "~/components/ui/sonner";
+import "vue-sonner/style.css";
 
 const colorMode = useColorMode();
 const switchColorMode = (color: string) => {

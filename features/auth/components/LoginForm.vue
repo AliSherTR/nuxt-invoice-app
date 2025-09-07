@@ -28,9 +28,9 @@ const togglePassword = () => {
 };
 
 const onSubmit = form.handleSubmit(async (values) => {
-  const res = login(values);
-  if ((await res).success) {
-    toast.success("Login Successful", {
+  const res = await login(values);
+  if (res.success) {
+    toast.success(res.message, {
       style: {
         background: "green",
         border: "1px solid green",
@@ -38,7 +38,7 @@ const onSubmit = form.handleSubmit(async (values) => {
       },
     });
   } else {
-    toast.error((await res).message, {
+    toast.error(res.message, {
       style: {
         background: "red",
         border: "1px solid red",
